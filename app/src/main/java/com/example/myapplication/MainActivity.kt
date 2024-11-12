@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTitle: TextView
     private lateinit var tvCount: TextView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: Adapter
+    private var listQuakes = mutableListOf<Feature>()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +28,11 @@ class MainActivity : AppCompatActivity() {
         tvTitle = findViewById(R.id.textViewTitle)
         tvCount = findViewById(R.id.textViewCount)
         recyclerView = findViewById(R.id.recyclerQuakes)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = Adapter(listQuakes)
+        recyclerView.adapter = adapter
+
 
     }
 
@@ -36,9 +44,9 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 if (call.isSuccessful) {
                     val quakes = response?.features
-                    /*quakes?.forEach {
+                    quakes?.forEach {
                         listQuakes.add(it)
-                    }*/
+                    }
                     val title = response?.metadata?.title
                     val count = response?.metadata?.count
                     tvTitle.text = title
