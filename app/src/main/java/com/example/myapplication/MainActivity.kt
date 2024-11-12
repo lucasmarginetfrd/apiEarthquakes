@@ -1,7 +1,10 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -10,11 +13,19 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var tvTitle: TextView
+    private lateinit var tvCount: TextView
+    private lateinit var recyclerView: RecyclerView
 
-
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        tvTitle = findViewById(R.id.textViewTitle)
+        tvCount = findViewById(R.id.textViewCount)
+        recyclerView = findViewById(R.id.recyclerQuakes)
+
     }
 
 
@@ -22,6 +33,18 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val call = getRetrofit().create(ServiceApi::class.java).getQuakes("significant_month.geojson")
             val response = call.body()
+            runOnUiThread {
+                if (call.isSuccessful) {
+                    val quakes = response?.features
+                    /*quakes?.forEach {
+                        listQuakes.add(it)
+                    }*/
+                    val title = response?.metadata?.title
+                    val count = response?.metadata?.count
+                    tvTitle.text = title
+                    tvCount.text = "Mostrando $count terremotos"
+                }
+            }
         }
     }
 

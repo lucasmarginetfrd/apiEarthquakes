@@ -7,7 +7,7 @@ data class Quakes (
 
 data class Metadata (
     val title: String,
-    //val count: Int
+    val count: Int
 )
 
 data class Feature (
